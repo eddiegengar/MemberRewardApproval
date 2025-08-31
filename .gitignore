@@ -1,0 +1,28 @@
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+*.vs/
+.vscode/
+
+# Rider IDE
+.idea/
+
+# MacOS
+.DS_Store
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Secret configs (optional)
+appsettings.Development.json
+appsettings.*.json
