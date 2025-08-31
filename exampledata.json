@@ -1,0 +1,49 @@
+{
+  "$schema": "http://mma.io/adaptivecards/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Large",
+      "weight": "Bolder",
+      "text": "籌碼兌換申請審批"
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        { "title": "WynnID:", "value": "12345678" },
+        { "title": "Avg Bet:", "value": "$5,000" },
+        { "title": "Win/Loss:", "value": "-$20,000" },
+        { "title": "Theo Win:", "value": "$18,000" },
+        { "title": "Playtime:", "value": "12h" },
+        { "title": "ADT:", "value": "$3,000" },
+        { "title": "申請兌換⾦額:", "value": "$200,000" }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "請確認是否批准該會員的籌碼兌換/獎賞申請。",
+      "wrap": true,
+      "spacing": "Medium"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "✅ 批准",
+      "data": {
+        "action": "approve",
+        "requestId": "REQ-20250821-001"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "❌ 拒絕",
+      "data": {
+        "action": "reject",
+        "requestId": "REQ-20250821-001"
+      }
+    }
+  ]
+}

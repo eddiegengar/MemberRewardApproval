@@ -1,0 +1,41 @@
+colima start
+
+1️⃣ Run the SQL container (first time)
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=YourStrong@Passw0rd" \
+  -p 1431:1433 \
+  -v ~/sql-data:/var/opt/mssql \
+  --name sqlserver2022 \
+  -d mcr.microsoft.com/azure-sql-edge:latest
+
+
+2️⃣ Stop the container
+docker stop sqlserver2022
+
+3️⃣ Start the container again
+docker start sqlserver2022
+
+4️⃣ Connect EF Core to your running container
+In your appsettings.json (or DbContext configuration), make sure your connection string points to the correct port:
+
+"ConnectionStrings": {
+  "RewardsDb": "Server=127.0.0.1,1431;Database=RewardsDb;User Id=sa;Password=YourStrong@Passw0rd;"
+}
+Then you can run:
+
+dotnet ef database update
+
+
+docker stop sqlserver2022
+
+
+
+curl -X POST http://localhost:5172/api/RewardRequests \
+-H "Content-Type: application/json" \
+-d '{"WynnId":"W001","RewardType":"Chip Redemption Approval,","Amount":100}'    
+
+
+
+
+
+supervisor1@eddiegengargmail.onmicrosoft.com
+Covo035307Admin150150!@

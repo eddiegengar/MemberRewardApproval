@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Supervisor Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/adaptivecards/dist/adaptivecards.min.js"></script>
+  </head>
+  <body>
+    <h1>Supervisor Dashboard</h1>
+    <div id="cardContainer"></div>
+
+    <script>
+      const supervisorId = "6f6a353c0843453e"; // fake ID
+
+      // Connect to SignalR hub
+      const connection = new signalR.HubConnectionBuilder()
+        .withUrl("http://localhost:5172/rewardHub?supervisorId=" + supervisorId)
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+      // Receive card JSON from backend
+      connection.on("ReceiveCard", (cardJson) => {
+        console.log("Received card JSON:", cardJson);
+
+        // Parse JSON to object
+        const cardData = JSON.parse(cardJson);
+
+        // Create Adaptive Card
+        const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+        adaptiveCard.parse(cardData);
+
+        // Handle button clicks
+        adaptiveCard.onExecuteAction = function (action) {
+          const data = action.data; // { action: "approve", requestId: "123" }
+          console.log("Action clicked:", data);
+
+          // Send back to your Web API controller
+          fetch("http://localhost:5172/api/TeamsWebhook/callback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data: data, supervisorId: supervisorId }),
+          })
+            .then((res) => res.json())
+            .then((result) => {
+              console.log("Server response:", result);
+              alert("Server handled action: " + result.action);
+            })
+            .catch((err) => console.error("Error posting action:", err));
+        };
+
+        // Render card
+        const container = document.getElementById("cardContainer");
+        container.innerHTML = ""; // clear previous
+        var renderedCard = adaptiveCard.render();
+        container.appendChild(renderedCard);
+      });
+
+      // Start SignalR connection
+      connection
+        .start()
+        .then(() => console.log("Connected as supervisor:", supervisorId))
+        .catch((err) => console.error(err));
+    </script>
+  </body>
+</html>

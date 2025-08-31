@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/MemberRewardApproval.WebApi.props" />
+</Project>
