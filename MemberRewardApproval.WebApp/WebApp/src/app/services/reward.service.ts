@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
+import { environment } from '../../environments/environment';
 
 export interface RequestedValue {
   title: string;
@@ -28,7 +29,7 @@ export class RewardService {
 
   connectToHub() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:5172/hubs/request') // your .NET hub URL
+      .withUrl(`${environment.apiBaseUrl}/hubs/request`) // your .NET hub URL
       .withAutomaticReconnect()
       .build();
 

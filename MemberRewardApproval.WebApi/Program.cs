@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var clientUrl = builder.Configuration["Angular:ClientUrl"];
+
 builder.Services.AddDbContext<RewardsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RewardsDb")));
 builder.Services.AddScoped<SequenceService>();
@@ -15,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(clientUrl)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

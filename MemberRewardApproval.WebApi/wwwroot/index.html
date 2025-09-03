@@ -11,9 +11,10 @@
 
     <script>
       const supervisorId = "6f6a353c0843453e"; // fake ID
+      const baseUrl = window.location.origin;
 
       const connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:5172/rewardHub?supervisorId=" + supervisorId)
+        .withUrl(`${baseUrl}/rewardHub?supervisorId=${supervisorId}`)
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
@@ -39,7 +40,7 @@
             supervisorId,
           };
 
-          fetch("http://localhost:5172/api/TeamsWebhook/callback", {
+          fetch(`${baseUrl}/api/TeamsWebhook/callback`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
