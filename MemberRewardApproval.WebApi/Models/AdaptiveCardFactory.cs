@@ -24,7 +24,7 @@ namespace MemberRewardApproval.WebApi.Models
         /// </summary>
         /// <param name="title">Header title for the card</param>
         /// <param name="facts">Dictionary of key/value pairs to display in FactSet</param>
-        /// <param name="buttons">List of buttons: (actionValue, buttonTitle)</param>
+        /// <param name="buttons">List of buttons: (type, title, requestId)</param>
         /// <returns>JSON string of the adaptive card</returns>
         public static string CreateCard(
             string title,
@@ -36,7 +36,7 @@ namespace MemberRewardApproval.WebApi.Models
             {
                 new { type = "TextBlock",  size = "Large", weight = "Bolder", text = title },
                 new { type = "FactSet", facts = facts.Select(kvp => new { title = kvp.Key, value = kvp.Value }).ToArray() },
-                new { type = "TextBlock", text = "Please confirm whether to approve this member's chip redemption / reward request.", wrap = "true", spacing = "Medium" },
+                new { type = "TextBlock", text = "請確認是否批准該會員的籌碼兌換/獎賞申請。", wrap = true, spacing = "Medium" },
             };
 
             // Actions array
@@ -49,8 +49,8 @@ namespace MemberRewardApproval.WebApi.Models
 
             var card = new AdaptiveCard
             {
-                  Schema = useCustomSchema 
-                    ? "http://mma.io/adaptivecards/schemas/adaptive-card.json" 
+                Schema = useCustomSchema
+                    ? "http://mma.io/adaptivecards/schemas/adaptive-card.json"
                     : "http://adaptivecards.io/schemas/adaptive-card.json",
                 Body = body.ToArray(),
                 Actions = actions
@@ -66,12 +66,12 @@ namespace MemberRewardApproval.WebApi.Models
         /// <summary>
         /// Helper method for reward approval cards
         /// </summary>
-        public static string CreateRewardApprovalCard(RewardRequest request, Dictionary<string,string> performanceData)
+        public static string CreateRewardApprovalCard(RewardRequest request, Dictionary<string, string> performanceData)
         {
             var title = request.RewardType;
             var facts = new Dictionary<string, string>(performanceData)
             {
-                { "Amount", request.Amount.ToString("C") },
+                { request.RequestedValue.Title, request.RequestedValue.Amount.ToString("C") },
             };
 
             var buttons = new List<(string action, string title, string requestId)>

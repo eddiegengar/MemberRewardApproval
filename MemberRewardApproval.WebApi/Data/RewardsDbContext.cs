@@ -8,28 +8,41 @@ namespace MemberRewardApproval.WebApi.Data
         public RewardsDbContext(DbContextOptions<RewardsDbContext> options) : base(options) { }
 
         public DbSet<RewardRequest> RewardRequests { get; set; }
+        public DbSet<DailySequence> DailySequences { get; set; }
         public DbSet<Supervisor> Supervisors { get; set; }
-        public DbSet<MemberPerformance> MemberPerformances { get; set; }
+        // public DbSet<MemberPerformance> MemberPerformances { get; set; }
+        public DbSet<MemberPerformanceSnapshot> MemberPerformanceSnapshots { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RewardRequest>()
-                .HasKey(m => m.RequestId); 
-
-            modelBuilder.Entity<MemberPerformance>()
-                .HasKey(m => m.WynnId); 
+                .HasKey(m => m.RequestId);
 
             modelBuilder.Entity<Supervisor>()
-                .HasKey(m => m.Id); //
+               .HasKey(m => m.Id);
+
+            modelBuilder.Entity<DailySequence>()
+              .HasKey(e => new { e.EntityName, e.Date });
+
+            modelBuilder.Entity<MemberPerformanceSnapshot>()
+                .HasKey(m => m.SnapshotId);
 
             modelBuilder.Entity<Supervisor>().HasData(
-                new Supervisor { Id = "1", Name = "Supervisor1", Email = "eddiegengar@gmail.com", AadId = "6f6a353c0843453e" },
-                new Supervisor { Id = "2", Name = "Supervisor2", Email = "supervisor2@example.com", AadId = "AAD-ID-2" }
+                new Supervisor { Id = "1", Name = "Supervisor1", Email = "eddiegengar@gmail.com", AadId = "6f6a353c0843453e" }
             );
 
-            modelBuilder.Entity<MemberPerformance>().HasData(
-                new MemberPerformance { WynnId = "W001", AvgBet = 100, WinLoss = 50, TheoWin = 120, Playtime = TimeSpan.FromHours(5), ADT = 30 },
-                new MemberPerformance { WynnId = "W002", AvgBet = 200, WinLoss = 75, TheoWin = 180, Playtime = TimeSpan.FromHours(8), ADT = 50 }
+            modelBuilder.Entity<MemberPerformanceSnapshot>().HasData(
+                new MemberPerformanceSnapshot
+                {
+                    SnapshotId = new Guid("11111111-1111-1111-1111-111111111111").ToString(),
+                    WynnId = "12345678",
+                    AvgBet = 5000,
+                    WinLoss = -20000,
+                    TheoWin = 18000,
+                    Playtime = TimeSpan.FromHours(12),
+                    ADT = 3000,
+                    CreatedAt = new DateTime(2025, 9, 1)
+                }
             );
         }
     }

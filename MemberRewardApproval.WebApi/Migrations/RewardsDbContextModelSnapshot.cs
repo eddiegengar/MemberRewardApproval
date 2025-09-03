@@ -22,9 +22,25 @@ namespace MemberRewardApproval.WebApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MemberRewardApproval.WebApi.Models.MemberPerformance", b =>
+            modelBuilder.Entity("MemberRewardApproval.WebApi.Models.DailySequence", b =>
                 {
-                    b.Property<string>("WynnId")
+                    b.Property<string>("EntityName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LastSequence")
+                        .HasColumnType("int");
+
+                    b.HasKey("EntityName", "Date");
+
+                    b.ToTable("DailySequences");
+                });
+
+            modelBuilder.Entity("MemberRewardApproval.WebApi.Models.MemberPerformanceSnapshot", b =>
+                {
+                    b.Property<string>("SnapshotId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("ADT")
@@ -32,6 +48,9 @@ namespace MemberRewardApproval.WebApi.Migrations
 
                     b.Property<decimal>("AvgBet")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("Playtime")
                         .HasColumnType("time");
@@ -42,28 +61,25 @@ namespace MemberRewardApproval.WebApi.Migrations
                     b.Property<decimal>("WinLoss")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("WynnId");
+                    b.Property<string>("WynnId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("MemberPerformances");
+                    b.HasKey("SnapshotId");
+
+                    b.ToTable("MemberPerformanceSnapshots");
 
                     b.HasData(
                         new
                         {
-                            WynnId = "W001",
-                            ADT = 30m,
-                            AvgBet = 100m,
-                            Playtime = new TimeSpan(0, 5, 0, 0, 0),
-                            TheoWin = 120m,
-                            WinLoss = 50m
-                        },
-                        new
-                        {
-                            WynnId = "W002",
-                            ADT = 50m,
-                            AvgBet = 200m,
-                            Playtime = new TimeSpan(0, 8, 0, 0, 0),
-                            TheoWin = 180m,
-                            WinLoss = 75m
+                            SnapshotId = "11111111-1111-1111-1111-111111111111",
+                            ADT = 3000m,
+                            AvgBet = 5000m,
+                            CreatedAt = new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Playtime = new TimeSpan(0, 12, 0, 0, 0),
+                            TheoWin = 18000m,
+                            WinLoss = -20000m,
+                            WynnId = "12345678"
                         });
                 });
 
@@ -71,9 +87,6 @@ namespace MemberRewardApproval.WebApi.Migrations
                 {
                     b.Property<string>("RequestId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -123,14 +136,33 @@ namespace MemberRewardApproval.WebApi.Migrations
                             AadId = "6f6a353c0843453e",
                             Email = "eddiegengar@gmail.com",
                             Name = "Supervisor1"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            AadId = "AAD-ID-2",
-                            Email = "supervisor2@example.com",
-                            Name = "Supervisor2"
                         });
+                });
+
+            modelBuilder.Entity("MemberRewardApproval.WebApi.Models.RewardRequest", b =>
+                {
+                    b.OwnsOne("MemberRewardApproval.WebApi.Models.RequestedValue", "RequestedValue", b1 =>
+                        {
+                            b1.Property<string>("RewardRequestRequestId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("RewardRequestRequestId");
+
+                            b1.ToTable("RewardRequests");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RewardRequestRequestId");
+                        });
+
+                    b.Navigation("RequestedValue")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

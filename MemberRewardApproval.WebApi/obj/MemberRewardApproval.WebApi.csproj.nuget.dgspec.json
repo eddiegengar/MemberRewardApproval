@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/eddie/Projects/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj": {}
+    "/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj": {}
   },
   "projects": {
-    "/Users/eddie/Projects/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj": {
+    "/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/eddie/Projects/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj",
+        "projectUniqueName": "/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj",
         "projectName": "MemberRewardApproval.WebApi",
-        "projectPath": "/Users/eddie/Projects/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj",
-        "packagesPath": "/Users/eddie/.nuget/packages/",
-        "outputPath": "/Users/eddie/Projects/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi/obj/",
+        "projectPath": "/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/MemberRewardApproval.WebApi.csproj",
+        "packagesPath": "/Users/work/.nuget/packages/",
+        "outputPath": "/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/eddie/.nuget/NuGet/NuGet.Config"
+          "/Users/work/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"

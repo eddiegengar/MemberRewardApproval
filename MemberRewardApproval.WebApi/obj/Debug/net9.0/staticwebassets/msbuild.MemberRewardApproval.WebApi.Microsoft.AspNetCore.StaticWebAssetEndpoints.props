@@ -1,16 +1,16 @@
 ﻿<Project>
   <ItemGroup>
-    <StaticWebAssetEndpoint Include="_content/MemberRewardApproval.WebApi/index.3su00j33ob.html">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"3su00j33ob"},{"Name":"integrity","Value":"sha256-LUi5g1Qtm7iQ3QlVTbTd88DF3k/kRpubDuo7T83iKR8="},{"Name":"label","Value":"_content/MemberRewardApproval.WebApi/index.html"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2322"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022LUi5g1Qtm7iQ3QlVTbTd88DF3k/kRpubDuo7T83iKR8=\u0022"},{"Name":"Last-Modified","Value":"Sun, 31 Aug 2025 12:18:08 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/MemberRewardApproval.WebApi/index.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-LUi5g1Qtm7iQ3QlVTbTd88DF3k/kRpubDuo7T83iKR8="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2322"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022LUi5g1Qtm7iQ3QlVTbTd88DF3k/kRpubDuo7T83iKR8=\u0022"},{"Name":"Last-Modified","Value":"Sun, 31 Aug 2025 12:18:08 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-VKu4MQmIPlymdLF1qZvNNjny5zNI3j8YKF916WZNMds="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2804"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022VKu4MQmIPlymdLF1qZvNNjny5zNI3j8YKF916WZNMds=\u0022"},{"Name":"Last-Modified","Value":"Tue, 02 Sep 2025 06:51:07 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/MemberRewardApproval.WebApi/index.wbwwl54dj2.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"wbwwl54dj2"},{"Name":"integrity","Value":"sha256-VKu4MQmIPlymdLF1qZvNNjny5zNI3j8YKF916WZNMds="},{"Name":"label","Value":"_content/MemberRewardApproval.WebApi/index.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2804"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022VKu4MQmIPlymdLF1qZvNNjny5zNI3j8YKF916WZNMds=\u0022"},{"Name":"Last-Modified","Value":"Tue, 02 Sep 2025 06:51:07 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
   </ItemGroup>
 </Project>

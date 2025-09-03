@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using MemberRewardApproval.WebApi.Services;
 using MemberRewardApproval.WebApi.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using MemberRewardApproval.WebApi.Hubs;
 
 namespace MemberRewardApproval.WebApi.Controllers
 {
@@ -10,13 +12,15 @@ namespace MemberRewardApproval.WebApi.Controllers
     public class TeamsWebhookController : ControllerBase
     {
         private readonly RewardService _rewardService;
+        private readonly IHubContext<RequestHub> _hubContext;
 
-        public TeamsWebhookController(RewardService rewardService)
+        public TeamsWebhookController(RewardService rewardService, IHubContext<RequestHub> hubContext)
         {
             _rewardService = rewardService;
+            _hubContext = hubContext;
         }
 
-       [HttpPost("callback")]
+        [HttpPost("callback")]
         public async Task<IActionResult> Callback([FromBody] CardActionPayload payload)
         {
             if (payload?.Data == null ||
@@ -41,6 +45,16 @@ namespace MemberRewardApproval.WebApi.Controllers
             {
                 return BadRequest(new { message = "Unknown action" });
             }
+
+            await _hubContext.Clients.All.SendAsync("RequestStatusUpdated", new
+            {
+                requestId = payload.Data.RequestId,
+                wynnId = payload.Data.WynnId,
+                status = action.Equals("approve", StringComparison.OrdinalIgnoreCase)
+                        ? RewardStatus.Approved
+                        : RewardStatus.Rejected
+            });
+
 
             return Ok(new { requestId, action, supervisorId = payload.SupervisorId });
         }

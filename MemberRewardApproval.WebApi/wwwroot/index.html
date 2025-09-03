@@ -12,38 +12,54 @@
     <script>
       const supervisorId = "6f6a353c0843453e"; // fake ID
 
-      // Connect to SignalR hub
       const connection = new signalR.HubConnectionBuilder()
         .withUrl("http://localhost:5172/rewardHub?supervisorId=" + supervisorId)
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-      // Receive card JSON from backend
       connection.on("ReceiveCard", (cardJson) => {
         console.log("Received card JSON:", cardJson);
 
-        // Parse JSON to object
         const cardData = JSON.parse(cardJson);
 
-        // Create Adaptive Card
         const adaptiveCard = new AdaptiveCards.AdaptiveCard();
         adaptiveCard.parse(cardData);
 
-        // Handle button clicks
         adaptiveCard.onExecuteAction = function (action) {
-          const data = action.data; // { action: "approve", requestId: "123" }
+          const data = action.data;
           console.log("Action clicked:", data);
 
-          // Send back to your Web API controller
+          // Extract WynnId from card
+          const wynnFactSet = cardData.body.find((b) => b.type === "FactSet");
+          const wynnFact = wynnFactSet.facts.find((f) => f.title === "WynnID");
+          const wynnId = wynnFact.value;
+
+          const payload = {
+            data: { ...data, wynnId },
+            supervisorId,
+          };
+
           fetch("http://localhost:5172/api/TeamsWebhook/callback", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: data, supervisorId: supervisorId }),
+            body: JSON.stringify(payload),
           })
             .then((res) => res.json())
             .then((result) => {
               console.log("Server response:", result);
-              alert("Server handled action: " + result.action);
+
+              // ✅ Replace card with confirmation
+              const container = document.getElementById("cardContainer");
+              container.innerHTML = `
+                <div style="padding: 10px; border: 1px solid #ccc; margin-top: 10px;">
+                  <strong>Request ${result.requestId}</strong> has been 
+                  <span style="color:${
+                    result.action === "approve" ? "green" : "red"
+                  };">
+                    ${result.action.toUpperCase()}
+                  </span>
+                </div>
+              `;
             })
             .catch((err) => console.error("Error posting action:", err));
         };
@@ -51,11 +67,9 @@
         // Render card
         const container = document.getElementById("cardContainer");
         container.innerHTML = ""; // clear previous
-        var renderedCard = adaptiveCard.render();
-        container.appendChild(renderedCard);
+        container.appendChild(adaptiveCard.render());
       });
 
-      // Start SignalR connection
       connection
         .start()
         .then(() => console.log("Connected as supervisor:", supervisorId))

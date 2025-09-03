@@ -19,7 +19,7 @@ namespace MemberRewardApproval.WebApi.Services
 
             // Save to file or log
             var fileName = $"Card_{request.RequestId}.json";
-            System.IO.File.WriteAllText(fileName, adaptiveCardJson);
+            // System.IO.File.WriteAllText(fileName, adaptiveCardJson);
 
             Console.WriteLine($"Adaptive Card JSON generated: {fileName}");
             Console.WriteLine($"Supervisor {supervisorId} can approve/reject via web interface at /rewardrequests/card?requestId={request.RequestId}");

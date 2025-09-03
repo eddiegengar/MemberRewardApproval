@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace MemberRewardApproval.WebApi.Migrations
 {
     /// <inheritdoc />
@@ -14,35 +12,51 @@ namespace MemberRewardApproval.WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "MemberPerformances",
+                name: "DailySequences",
                 columns: table => new
                 {
-                    WynnId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EntityName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastSequence = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailySequences", x => new { x.EntityName, x.Date });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MemberPerformanceSnapshots",
+                columns: table => new
+                {
+                    SnapshotId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WynnId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AvgBet = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     WinLoss = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TheoWin = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Playtime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    ADT = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    ADT = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MemberPerformances", x => x.WynnId);
+                    table.PrimaryKey("PK_MemberPerformanceSnapshots", x => x.SnapshotId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "RewardRequests",
                 columns: table => new
                 {
-                    WynnId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RequestId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WynnId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RewardType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    RequestedValue_Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestedValue_Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RewardRequests", x => x.WynnId);
+                    table.PrimaryKey("PK_RewardRequests", x => x.RequestId);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,29 +74,24 @@ namespace MemberRewardApproval.WebApi.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "MemberPerformances",
-                columns: new[] { "WynnId", "ADT", "AvgBet", "Playtime", "TheoWin", "WinLoss" },
-                values: new object[,]
-                {
-                    { "W001", 30m, 100m, new TimeSpan(0, 5, 0, 0, 0), 120m, 50m },
-                    { "W002", 50m, 200m, new TimeSpan(0, 8, 0, 0, 0), 180m, 75m }
-                });
+                table: "MemberPerformanceSnapshots",
+                columns: new[] { "SnapshotId", "ADT", "AvgBet", "CreatedAt", "Playtime", "TheoWin", "WinLoss", "WynnId" },
+                values: new object[] { "11111111-1111-1111-1111-111111111111", 3000m, 5000m, new DateTime(2025, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 12, 0, 0, 0), 18000m, -20000m, "12345678" });
 
             migrationBuilder.InsertData(
                 table: "Supervisors",
                 columns: new[] { "Id", "AadId", "Email", "Name" },
-                values: new object[,]
-                {
-                    { "1", "6f6a353c0843453e", "eddiegengar@gmail.com", "Supervisor1" },
-                    { "2", "AAD-ID-2", "supervisor2@example.com", "Supervisor2" }
-                });
+                values: new object[] { "1", "6f6a353c0843453e", "eddiegengar@gmail.com", "Supervisor1" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MemberPerformances");
+                name: "DailySequences");
+
+            migrationBuilder.DropTable(
+                name: "MemberPerformanceSnapshots");
 
             migrationBuilder.DropTable(
                 name: "RewardRequests");

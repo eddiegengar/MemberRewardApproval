@@ -24,10 +24,10 @@ namespace MemberRewardApproval.WebApi.Controllers
             {
                 // 1. Create reward request (ensures no pending duplicate)
                 var request = await _rewardService.CreateRequestAsync(
-                    requestDto.WynnId, requestDto.RewardType, requestDto.Amount);
+                    requestDto.WynnId, requestDto.RewardType, requestDto.RequestedValue);
 
                 // 2. Retrieve supervisor ID and member performance
-                var supervisorId = await _rewardService.GetSupervisorAadIdAsync("eddiegengar@gmail.com"); 
+                var supervisorId = await _rewardService.GetSupervisorAadIdAsync("eddiegengar@gmail.com");
                 var performanceData = await _rewardService.GetMemberPerformanceAsync(requestDto.WynnId);
 
                 // 3. Send Adaptive Card via notification service
@@ -41,6 +41,6 @@ namespace MemberRewardApproval.WebApi.Controllers
             }
         }
 
-        
+
     }
 }

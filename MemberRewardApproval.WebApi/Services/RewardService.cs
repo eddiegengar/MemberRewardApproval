@@ -1,16 +1,19 @@
 using MemberRewardApproval.WebApi.Data;
 using MemberRewardApproval.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace MemberRewardApproval.WebApi.Services
 {
     public class RewardService
     {
         private readonly RewardsDbContext _db;
+        private readonly SequenceService _sequenceService;
 
-        public RewardService(RewardsDbContext db)
+        public RewardService(RewardsDbContext db, SequenceService sequenceService)
         {
             _db = db;
+            _sequenceService = sequenceService;
         }
 
         /// <summary>
@@ -18,19 +21,27 @@ namespace MemberRewardApproval.WebApi.Services
         /// Ensures there is no existing pending request for the same WynnID.
         /// Adds the request to the database with status "Pending" and returns it.
         /// </summary>
-        public async Task<RewardRequest> CreateRequestAsync(string wynnId, string rewardType, decimal amount)
+        public async Task<RewardRequest> CreateRequestAsync(string wynnId, string rewardType, RequestedValue requestedValue)
         {
-            if (await _db.RewardRequests.AnyAsync(r => r.WynnId == wynnId && r.Status == "Pending"))
-                throw new InvalidOperationException($"WynnID {wynnId} already has a pending request.");
+            // Check pending requests
+            var pending = await _db.RewardRequests
+                .AnyAsync(r => r.WynnId == wynnId && r.Status == RewardStatus.Pending);
+            if (pending) throw new InvalidOperationException($"WynnID {wynnId} already has a pending request.");
 
+            // Create reward request
+            string requestId = await _sequenceService.GenerateEntityIdAsync("Request", "REQ");
             var request = new RewardRequest
             {
+                RequestId = requestId,
                 WynnId = wynnId,
                 RewardType = rewardType,
-                Amount = amount,
-                Status = "Pending"
+                RequestedValue = new RequestedValue
+                {
+                    Title = requestedValue.Title,
+                    Amount = requestedValue.Amount
+                },
+                Status = RewardStatus.Pending
             };
-
             _db.RewardRequests.Add(request);
             await _db.SaveChangesAsync();
 
@@ -51,18 +62,21 @@ namespace MemberRewardApproval.WebApi.Services
         /// </summary>
         public async Task<Dictionary<string, string>> GetMemberPerformanceAsync(string wynnId)
         {
-            var performance = await _db.MemberPerformances.FindAsync(wynnId);
-            if (performance == null)
+            var latestSnapshot = await _db.MemberPerformanceSnapshots
+                        .Where(s => s.WynnId == wynnId)
+                        .OrderByDescending(s => s.CreatedAt)
+                        .FirstOrDefaultAsync();
+            if (latestSnapshot == null)
                 throw new InvalidOperationException($"Performance data for WynnID {wynnId} not found.");
 
             return new Dictionary<string, string>
             {
-                { "WynnID", performance.WynnId},
-                { "Avg Bet", performance.AvgBet.ToString("C") },
-                { "Win/Loss", performance.WinLoss.ToString("C") },
-                { "Theo Win", performance.TheoWin.ToString("C") },
-                { "Playtime", performance.Playtime.TotalHours + "h" },
-                { "ADT", performance.ADT.ToString("C") }
+                { "WynnID", latestSnapshot.WynnId},
+                { "Avg Bet", latestSnapshot.AvgBet.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) },
+                { "Win/Loss", latestSnapshot.WinLoss.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) },
+                { "Theo Win", latestSnapshot.TheoWin.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) },
+                { "Playtime", latestSnapshot.Playtime.TotalHours + "h" },
+                { "ADT", latestSnapshot.ADT.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) }
             };
         }
 
@@ -80,3 +94,4 @@ namespace MemberRewardApproval.WebApi.Services
         }
     }
 }
+

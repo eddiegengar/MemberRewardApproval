@@ -8,7 +8,8 @@ namespace MemberRewardApproval.WebApi.Models
 
     public class ActionData
     {
-        public string Action { get; set; }
-        public string RequestId { get; set; }
+        public string Action { get; set; }        // "approve" or "reject"
+        public string RequestId { get; set; }     // the request being approved/rejected
+        public string WynnId { get; set; }        // the member id associated with the request
     }
 }
