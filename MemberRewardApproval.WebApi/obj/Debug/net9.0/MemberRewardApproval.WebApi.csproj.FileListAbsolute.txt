@@ -384,4 +384,4 @@
 /Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/Debug/net9.0/MemberRewardApproval.WebApi.pdb
 /Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/Debug/net9.0/MemberRewardApproval.WebApi.genruntimeconfig.cache
 /Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/Debug/net9.0/ref/MemberRewardApproval.WebApi.dll
-/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/Debug/net9.0/compressed/9duxadsqjm-wbwwl54dj2.gz
+/Users/work/Projects/DotnetProjects/MemberRewardApproval/MemberRewardApproval.WebApi/obj/Debug/net9.0/compressed/9duxadsqjm-yum9t0rp5z.gz

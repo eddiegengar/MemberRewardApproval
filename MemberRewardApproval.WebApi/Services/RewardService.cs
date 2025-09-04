@@ -49,15 +49,6 @@ namespace MemberRewardApproval.WebApi.Services
         }
 
         /// <summary>
-        /// Returns the supervisor's Azure AD ID for the given email.
-        /// </summary>
-        public async Task<string> GetSupervisorAadIdAsync(string email)
-        {
-            var supervisor = await _db.Supervisors.FirstOrDefaultAsync(s => s.Email == email);
-            return supervisor?.AadId ?? throw new InvalidOperationException($"Supervisor for email {email} not found.");
-        }
-
-        /// <summary>
         /// Retrieves the performance metrics for a member identified by the given WynnID.
         /// </summary>
         public async Task<Dictionary<string, string>> GetMemberPerformanceAsync(string wynnId)

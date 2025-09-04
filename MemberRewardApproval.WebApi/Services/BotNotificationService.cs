@@ -5,6 +5,8 @@ using Microsoft.Bot.Schema;
 using Microsoft.Graph;
 using Azure.Identity;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
+using MemberRewardApproval.WebApi.Options;
 
 namespace MemberRewardApproval.WebApi.Services
 {
@@ -16,18 +18,11 @@ namespace MemberRewardApproval.WebApi.Services
 
         private readonly GraphServiceClient _graph; // to resolve email → AAD user
 
-        public BotNotificationService(IConfiguration config)
+        public BotNotificationService(IOptions<BotOptions> options)
         {
-            _appId = config["Bot:AppId"];
-            _appPassword = config["Bot:AppPassword"];
-            _serviceUrl = config["Bot:ServiceUrl"];
-
-            // Graph client (app permissions)
-            var credential = new ClientSecretCredential(
-                config["AzureAd:TenantId"],
-                config["AzureAd:ClientId"],
-                config["AzureAd:ClientSecret"]);
-            _graph = new GraphServiceClient(credential);
+            _appId = options.Value.AppId;
+            _appPassword = options.Value.AppPassword;
+            _serviceUrl = options.Value.ServiceUrl;
         }
 
         /// <summary>

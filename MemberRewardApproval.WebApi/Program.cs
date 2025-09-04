@@ -1,5 +1,6 @@
 using MemberRewardApproval.WebApi.Data;
 using MemberRewardApproval.WebApi.Hubs;
+using MemberRewardApproval.WebApi.Options;
 using MemberRewardApproval.WebApi.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,10 @@ builder.Services.AddDbContext<RewardsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RewardsDb")));
 builder.Services.AddScoped<SequenceService>();
 builder.Services.AddScoped<RewardService>();
-builder.Services.AddScoped<INotificationService, WebNotificationService>();
+builder.Services.Configure<AzureAdOptions>(builder.Configuration.GetSection("AzureAd"));
+builder.Services.AddSingleton<GraphUserService>();
+builder.Services.Configure<BotOptions>(builder.Configuration.GetSection("Bot"));
+builder.Services.AddSingleton<INotificationService, TeamsNotificationService>();
 
 builder.Services.AddCors(options =>
 {

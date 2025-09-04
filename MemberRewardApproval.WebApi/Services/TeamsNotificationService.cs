@@ -1,19 +1,21 @@
+using MemberRewardApproval.WebApi.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Azure.Identity;
-using MemberRewardApproval.WebApi.Models;
 using Microsoft.Graph.Models;
+using MemberRewardApproval.WebApi.Options;
 
 namespace MemberRewardApproval.WebApi.Services
 {
-    public class TeamsNotificationService: INotificationService
+    public class TeamsNotificationService : INotificationService
     {
         private readonly GraphServiceClient _graph;
 
-        public TeamsNotificationService(IConfiguration config)
+        public TeamsNotificationService(IOptions<BotOptions> options)
         {
-            var clientId = config["AzureAd:ClientId"];
-            var tenantId = config["AzureAd:TenantId"];
-            var clientSecret = config["AzureAd:ClientSecret"];
+            var tenantId = options.Value.TenantId;
+            var clientId = options.Value.AppId;
+            var clientSecret = options.Value.AppPassword;
 
             var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
             _graph = new GraphServiceClient(credential);
@@ -24,7 +26,8 @@ namespace MemberRewardApproval.WebApi.Services
         /// </summary>
         public async Task SendApprovalCardAsync(string supervisorAadId, RewardRequest request, Dictionary<string, string> performanceData)
         {
-            var chat = await _graph.Chats.PostAsync(new Chat
+            // 1. Create or get 1:1 chat with supervisor
+            var chat = new Chat
             {
                 ChatType = ChatType.OneOnOne,
                 Members = new List<ConversationMember>
@@ -38,10 +41,14 @@ namespace MemberRewardApproval.WebApi.Services
                         }
                     }
                 }
-            });
+            };
 
+            var createdChat = await _graph.Chats.PostAsync(chat);
+
+            // 2. Create Adaptive Card JSON
             var adaptiveCardJson = AdaptiveCardFactory.CreateRewardApprovalCard(request, performanceData);
 
+            // 3. Send the adaptive card as a chat message
             var chatMessage = new ChatMessage
             {
                 Body = new ItemBody
@@ -59,7 +66,7 @@ namespace MemberRewardApproval.WebApi.Services
                 }
             };
 
-            await _graph.Chats[chat.Id].Messages.PostAsync(chatMessage);
+            await _graph.Chats[createdChat.Id].Messages.PostAsync(chatMessage);
         }
     }
 }

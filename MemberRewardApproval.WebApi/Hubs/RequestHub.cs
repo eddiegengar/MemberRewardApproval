@@ -9,11 +9,14 @@ namespace MemberRewardApproval.WebApi.Hubs
     public class RequestHub : Hub
     {
         private readonly RewardService _rewardService;
+        private readonly GraphUserService _graphService;
         private readonly INotificationService _notificationService;
 
-        public RequestHub(RewardService rewardService, INotificationService notificationService)
+
+        public RequestHub(RewardService rewardService, GraphUserService graphService, INotificationService notificationService)
         {
             _rewardService = rewardService;
+            _graphService = graphService;
             _notificationService = notificationService;
         }
 
@@ -27,7 +30,7 @@ namespace MemberRewardApproval.WebApi.Hubs
                     requestDto.WynnId, requestDto.RewardType, requestDto.RequestedValue);
 
                 // 2. Get supervisor ID and member performance
-                var supervisorId = await _rewardService.GetSupervisorAadIdAsync("eddiegengar@gmail.com");
+                var supervisorId = await _graphService.GetUserAadIdByEmailAsync("it@winson-group.com");
                 var performanceData = await _rewardService.GetMemberPerformanceAsync(requestDto.WynnId);
 
                 // 3. Send adaptive card to supervisor
