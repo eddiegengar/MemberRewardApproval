@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 using MemberRewardApproval.WebApi.Services.Bots;
 using MemberRewardApproval.WebApi.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemberRewardApproval.WebApi.Controllers
 {
@@ -44,6 +45,7 @@ namespace MemberRewardApproval.WebApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task PostAsync([FromBody] Activity activity)
         {
             if (activity == null)

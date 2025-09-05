@@ -1,9 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using MemberRewardApproval.WebApi.Services;
 using MemberRewardApproval.WebApi.Models;
+using MemberRewardApproval.WebApi.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MemberRewardApproval.WebApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class RewardRequestsController : ControllerBase

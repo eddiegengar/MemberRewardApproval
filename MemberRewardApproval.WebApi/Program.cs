@@ -3,9 +3,11 @@ using MemberRewardApproval.WebApi.Hubs;
 using MemberRewardApproval.WebApi.Options;
 using MemberRewardApproval.WebApi.Services;
 using MemberRewardApproval.WebApi.Services.Bots;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,14 @@ builder.Services.AddSingleton<CloudAdapter>(sp =>
 builder.Services.AddScoped<IBot, RewardBot>();
 builder.Services.AddScoped<INotificationService, BotNotificationService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(options =>
+    {
+        builder.Configuration.Bind("AzureAuth", options);
+        options.Events = new JwtBearerEvents();
+    }, options => { builder.Configuration.Bind("AzureAuth", options); });
+
+
 // --- CORS ---
 builder.Services.AddCors(options =>
 {
@@ -52,13 +62,31 @@ builder.Services.AddCors(options =>
 builder.Services.AddSignalR();
 
 builder.Services.AddControllers();
+// API Documentation
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
+}
 app.UseCors();
 
 app.UseStaticFiles();
+
 app.UseRouting();
+// Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<RewardHub>("/rewardHub");
