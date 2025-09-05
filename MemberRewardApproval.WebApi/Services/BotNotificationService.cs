@@ -1,72 +1,76 @@
 using MemberRewardApproval.WebApi.Models;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Connector.Authentication;
-using Microsoft.Bot.Schema;
-using Microsoft.Graph;
-using Azure.Identity;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
 using MemberRewardApproval.WebApi.Options;
+using MemberRewardApproval.WebApi.Services.Bots;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration.AspNet.Core;
+using Microsoft.Bot.Schema;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace MemberRewardApproval.WebApi.Services
 {
     public class BotNotificationService : INotificationService
     {
         private readonly string _appId;
-        private readonly string _appPassword;
-        private readonly string _serviceUrl;
+        private readonly CloudAdapter _adapter;
+        private readonly ConversationReferenceService _conversationService;
 
-        private readonly GraphServiceClient _graph; // to resolve email → AAD user
-
-        public BotNotificationService(IOptions<BotOptions> options)
+        public BotNotificationService(IOptions<BotOptions> options, CloudAdapter adapter, ConversationReferenceService conversationService)
         {
-            _appId = options.Value.AppId;
-            _appPassword = options.Value.AppPassword;
-            _serviceUrl = options.Value.ServiceUrl;
+            _appId = options.Value.MicrosoftAppId;
+            _adapter = adapter;
+            _conversationService = conversationService;
         }
 
         /// <summary>
-        /// Send an Adaptive Card to the supervisor via Bot Framework.
-        /// Accepts supervisor email, resolves to AAD ID.
+        /// Sends an Adaptive Card proactively to the supervisor.
         /// </summary>
-        public async Task SendApprovalCardAsync(string supervisorAadId, RewardRequest request, Dictionary<string, string> performanceData)
+        public async Task SendApprovalCardAsync(
+            string supervisorAadId,
+            RewardRequest request,
+            Dictionary<string, string> performanceData)
         {
-            // 1. Create connector client
-            var credentials = new MicrosoftAppCredentials(_appId, _appPassword);
-            using var connector = new ConnectorClient(new Uri(_serviceUrl), credentials);
-
-            // 2. Create a 1:1 conversation with the supervisor
-            var conversation = await connector.Conversations.CreateConversationAsync(new ConversationParameters
+            // 1. Get the conversation reference
+            var conversationRef = await _conversationService.GetConversationReferenceAsync(supervisorAadId);
+            if (conversationRef == null)
             {
-                Bot = new ChannelAccount(id: _appId),
-                Members = new List<ChannelAccount>
-                {
-                    new ChannelAccount(id: supervisorAadId)
-                }
-            });
+                throw new InvalidOperationException(
+                    "No conversation reference found for the supervisor. " +
+                    "Ensure the bot has been installed and started a conversation.");
+            }
+            // if (!ConversationReferenceStore.TryGet(supervisorAadId, out var conversationRef))
+            // {
+            //     throw new InvalidOperationException(
+            //         "No conversation reference found for the supervisor. " +
+            //         "Ensure the bot has been installed and started a conversation.");
+            // }
 
-            // 3. Create Adaptive Card JSON
+            // 2. Create Adaptive Card JSON
             var adaptiveCardJson = AdaptiveCardFactory.CreateRewardApprovalCard(request, performanceData);
 
-            // 4. Create activity
-            var activity = new Activity
-            {
-                Type = ActivityTypes.Message,
-                Conversation = new ConversationAccount(id: conversation.Id),
-                From = new ChannelAccount(id: _appId),
-                Attachments = new List<Attachment>
+            // 3. Send proactively via the CloudAdapter
+            await _adapter.ContinueConversationAsync(
+                _appId,
+                conversationRef,
+                async (turnContext, cancellationToken) =>
                 {
-                    new Attachment
+                    // Parse JSON safely using Newtonsoft JObject
+                    var attachment = new Attachment
                     {
                         ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonSerializer.Deserialize<object>(adaptiveCardJson)
-                    }
-                }
-            };
+                        Content = JObject.Parse(adaptiveCardJson)
+                    };
 
-            // 5. Send message
-            await connector.Conversations.SendToConversationAsync(activity);
+                    // Create activity
+                    var activity = MessageFactory.Attachment(attachment);
+
+                    // Optional: log for debugging
+                    Console.WriteLine($"Sending Adaptive Card to ConvId={conversationRef.Conversation.Id}, Channel={conversationRef.ChannelId}");
+
+                    // Send activity
+                    await turnContext.SendActivityAsync(activity, cancellationToken);
+                },
+                cancellationToken: default);
         }
-
     }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MemberRewardApproval.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+28995cfede878fad82fcae47b59d244fc00fedb0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+06fa9821d44823536f251d051f8e3d23357e2f55")]
 [assembly: System.Reflection.AssemblyProductAttribute("MemberRewardApproval.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MemberRewardApproval.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

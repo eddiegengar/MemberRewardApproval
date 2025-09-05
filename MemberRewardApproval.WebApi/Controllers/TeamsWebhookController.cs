@@ -23,15 +23,15 @@ namespace MemberRewardApproval.WebApi.Controllers
         [HttpPost("callback")]
         public async Task<IActionResult> Callback([FromBody] CardActionPayload payload)
         {
-            if (payload?.Data == null ||
-                string.IsNullOrEmpty(payload.Data.Action) ||
-                string.IsNullOrEmpty(payload.Data.RequestId))
+            if (payload == null ||
+                string.IsNullOrEmpty(payload.Action) ||
+                string.IsNullOrEmpty(payload.RequestId))
             {
                 return BadRequest();
             }
 
-            var action = payload.Data.Action;
-            var requestId = payload.Data.RequestId;
+            var action = payload.Action;
+            var requestId = payload.RequestId;
 
             if (action.Equals("approve", StringComparison.OrdinalIgnoreCase))
             {
@@ -48,15 +48,15 @@ namespace MemberRewardApproval.WebApi.Controllers
 
             await _hubContext.Clients.All.SendAsync("RequestStatusUpdated", new
             {
-                requestId = payload.Data.RequestId,
-                wynnId = payload.Data.WynnId,
+                requestId = payload.RequestId,
+                // wynnId = payload.WynnId,
                 status = action.Equals("approve", StringComparison.OrdinalIgnoreCase)
                         ? RewardStatus.Approved
                         : RewardStatus.Rejected
             });
 
 
-            return Ok(new { requestId, action, supervisorId = payload.SupervisorId });
+            return Ok(new { requestId, action });
         }
 
     }

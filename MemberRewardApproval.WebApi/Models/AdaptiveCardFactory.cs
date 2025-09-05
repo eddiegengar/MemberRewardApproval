@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -71,7 +72,7 @@ namespace MemberRewardApproval.WebApi.Models
             var title = request.RewardType;
             var facts = new Dictionary<string, string>(performanceData)
             {
-                { request.RequestedValue.Title, request.RequestedValue.Amount.ToString("C") },
+                { request.RequestedValue.Title, request.RequestedValue.Amount.ToString("C", CultureInfo.CreateSpecificCulture("en-US")) },
             };
 
             var buttons = new List<(string action, string title, string requestId)>

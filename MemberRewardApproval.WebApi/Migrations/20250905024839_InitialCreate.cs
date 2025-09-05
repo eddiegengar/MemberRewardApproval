@@ -12,6 +12,28 @@ namespace MemberRewardApproval.WebApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ConversationReferences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AadObjectId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConversationId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConversationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConversationType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BotId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BotName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChannelId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServiceUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConversationReferences", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DailySequences",
                 columns: table => new
                 {
@@ -81,12 +103,15 @@ namespace MemberRewardApproval.WebApi.Migrations
             migrationBuilder.InsertData(
                 table: "Supervisors",
                 columns: new[] { "Id", "AadId", "Email", "Name" },
-                values: new object[] { "1", "6f6a353c0843453e", "eddiegengar@gmail.com", "Supervisor1" });
+                values: new object[] { "1", "6f6a353c0843453e", "it@winson-group.com", "Supervisor1" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ConversationReferences");
+
             migrationBuilder.DropTable(
                 name: "DailySequences");
 

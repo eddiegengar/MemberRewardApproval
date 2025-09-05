@@ -13,9 +13,9 @@ namespace MemberRewardApproval.WebApi.Services
 
         public TeamsNotificationService(IOptions<BotOptions> options)
         {
-            var tenantId = options.Value.TenantId;
-            var clientId = options.Value.AppId;
-            var clientSecret = options.Value.AppPassword;
+            var tenantId = options.Value.MicrosoftAppTenantId;
+            var clientId = options.Value.MicrosoftAppId;
+            var clientSecret = options.Value.MicrosoftAppPassword;
 
             var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
             _graph = new GraphServiceClient(credential);

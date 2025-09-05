@@ -5,20 +5,40 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using MemberRewardApproval.WebApi.Services;
 using MemberRewardApproval.WebApi.Models;
+using MemberRewardApproval.WebApi.Data;
 
 namespace MemberRewardApproval.WebApi.Services.Bots
 {
     public class RewardBot : ActivityHandler
     {
-        private readonly RewardService _rewardService;
+        // ngrok http http://localhost:5172
+        private RewardService _rewardService;
 
         public RewardBot(RewardService rewardService)
         {
             _rewardService = rewardService;
         }
 
+        protected override async Task OnMembersAddedAsync(
+            IList<ChannelAccount> membersAdded,
+            ITurnContext<IConversationUpdateActivity> turnContext,
+            CancellationToken cancellationToken)
+        {
+            foreach (var member in membersAdded)
+            {
+                // Greet only non-bot users
+                if (member.Id != turnContext.Activity.Recipient.Id)
+                {
+                    await turnContext.SendActivityAsync(
+                        MessageFactory.Text($"Welcome to the Reward Approval Bot!"),
+                        cancellationToken);
+                }
+            }
+        }
+
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
+            Console.WriteLine("OnMessageActivityAsync triggered");
             var conversationRef = turnContext.Activity.GetConversationReference();
 
             // Store this somewhere persistent keyed by user ID
@@ -39,10 +59,10 @@ namespace MemberRewardApproval.WebApi.Services.Bots
             {
                 var payload = JsonSerializer.Deserialize<CardActionPayload>(value.ToString());
 
-                if (payload?.Data != null)
+                if (payload != null)
                 {
-                    string requestId = payload.Data.RequestId;
-                    string action = payload.Data.Action;
+                    string requestId = payload.RequestId;
+                    string action = payload.Action;
 
                     if (action == "approve")
                     {

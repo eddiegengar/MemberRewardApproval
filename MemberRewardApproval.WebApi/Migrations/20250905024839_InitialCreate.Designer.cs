@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MemberRewardApproval.WebApi.Migrations
 {
     [DbContext(typeof(RewardsDbContext))]
-    [Migration("20250902040037_InitialCreate")]
+    [Migration("20250905024839_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,58 @@ namespace MemberRewardApproval.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MemberRewardApproval.WebApi.Models.ConversationReferenceEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AadObjectId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BotId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BotName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChannelId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConversationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConversationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConversationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ServiceUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConversationReferences");
+                });
 
             modelBuilder.Entity("MemberRewardApproval.WebApi.Models.DailySequence", b =>
                 {
@@ -137,7 +189,7 @@ namespace MemberRewardApproval.WebApi.Migrations
                         {
                             Id = "1",
                             AadId = "6f6a353c0843453e",
-                            Email = "eddiegengar@gmail.com",
+                            Email = "it@winson-group.com",
                             Name = "Supervisor1"
                         });
                 });
