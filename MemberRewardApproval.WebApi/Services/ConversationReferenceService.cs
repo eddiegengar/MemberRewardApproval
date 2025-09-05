@@ -8,7 +8,6 @@ namespace MemberRewardApproval.WebApi.Services;
 public class ConversationReferenceService
 {
     private readonly RewardsDbContext _db;
-
     public ConversationReferenceService(RewardsDbContext db)
     {
         _db = db;

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MemberRewardApproval.WebApi.Services;
 using MemberRewardApproval.WebApi.Models;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using MemberRewardApproval.WebApi.Hubs;
 

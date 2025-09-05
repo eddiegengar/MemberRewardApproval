@@ -1,7 +1,9 @@
+using MemberRewardApproval.WebApi.Hubs;
 using MemberRewardApproval.WebApi.Models;
 using MemberRewardApproval.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MemberRewardApproval.WebApi.Controllers
 {
@@ -13,12 +15,21 @@ namespace MemberRewardApproval.WebApi.Controllers
         private readonly RewardService _rewardService;
         private readonly GraphUserService _graphService;
         private readonly INotificationService _notificationService;
+        private readonly IHubContext<RequestHub> _hubContext;
 
-        public RewardRequestsController(RewardService rewardService, GraphUserService graphUserService, INotificationService notificationService)
+        public RewardRequestsController(RewardService rewardService, GraphUserService graphUserService, INotificationService notificationService, IHubContext<RequestHub> hubContext)
         {
             _rewardService = rewardService;
             _graphService = graphUserService;
             _notificationService = notificationService;
+            _hubContext = hubContext;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var requests = await _rewardService.GetAllRequestsAsync();
+            return Ok(requests);
         }
 
         [HttpPost]
@@ -45,6 +56,11 @@ namespace MemberRewardApproval.WebApi.Controllers
             }
         }
 
-
+        [HttpGet("[action]")]
+        public async Task TestSingalR()
+        {
+            await _hubContext.Clients.All.SendAsync("RequestStatusUpdated", "hello from controller");
+            return;
+        }
     }
 }

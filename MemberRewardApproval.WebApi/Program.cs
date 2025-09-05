@@ -28,7 +28,6 @@ builder.Services.Configure<BotOptions>(builder.Configuration.GetSection("Bot"));
 
 // --- Bot-related services ---
 builder.Services.AddSingleton<GraphUserService>();
-
 builder.Services.AddSingleton<CloudAdapter>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
@@ -45,16 +44,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Events = new JwtBearerEvents();
     }, options => { builder.Configuration.Bind("AzureAuth", options); });
 
-
 // --- CORS ---
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(clientUrl)
+        policy.AllowAnyOrigin()
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            .AllowAnyMethod();
+
+        // policy.WithOrigins(clientUrl)
+        //     .AllowAnyHeader()
+        //     .AllowAnyMethod()
+        //     .AllowCredentials();
     });
 });
 

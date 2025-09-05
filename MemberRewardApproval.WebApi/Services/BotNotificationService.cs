@@ -38,12 +38,6 @@ namespace MemberRewardApproval.WebApi.Services
                     "No conversation reference found for the supervisor. " +
                     "Ensure the bot has been installed and started a conversation.");
             }
-            // if (!ConversationReferenceStore.TryGet(supervisorAadId, out var conversationRef))
-            // {
-            //     throw new InvalidOperationException(
-            //         "No conversation reference found for the supervisor. " +
-            //         "Ensure the bot has been installed and started a conversation.");
-            // }
 
             // 2. Create Adaptive Card JSON
             var adaptiveCardJson = AdaptiveCardFactory.CreateRewardApprovalCard(request, performanceData);

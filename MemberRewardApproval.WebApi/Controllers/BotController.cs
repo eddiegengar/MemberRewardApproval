@@ -11,6 +11,7 @@ using MemberRewardApproval.WebApi.Services.Bots;
 using MemberRewardApproval.WebApi.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MemberRewardApproval.WebApi.Controllers
 {
@@ -51,8 +52,6 @@ namespace MemberRewardApproval.WebApi.Controllers
             if (activity == null)
                 return;
 
-            // Save conversation reference for proactive messages
-            // var conversationRef = activity.GetConversationReference();
             // Save or update and get the ConversationReference in one step
             var conversationRef = await _conversationService.SaveOrUpdateConversationReferenceAsync(activity);
             if (conversationRef == null)
@@ -61,9 +60,6 @@ namespace MemberRewardApproval.WebApi.Controllers
                     activity.Type, activity.From?.Id);
                 return;
             }
-
-            if (!string.IsNullOrEmpty(activity.From?.AadObjectId))
-                ConversationReferenceStore.Save(activity.From.AadObjectId, conversationRef);
 
             // Handle Adaptive Card button click
             if (activity.Type == ActivityTypes.Message && activity.Value != null)
@@ -121,6 +117,7 @@ namespace MemberRewardApproval.WebApi.Controllers
                     },
                     cancellationToken: default);
             }
+            return;
         }
     }
 }

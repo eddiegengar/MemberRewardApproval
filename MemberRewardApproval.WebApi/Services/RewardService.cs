@@ -16,6 +16,13 @@ namespace MemberRewardApproval.WebApi.Services
             _sequenceService = sequenceService;
         }
 
+        public async Task<List<RewardRequest>> GetAllRequestsAsync()
+        {
+            return await _db.RewardRequests
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+        }
+
         /// <summary>
         /// Creates a new reward request for the specified WynnID and reward details.
         /// Ensures there is no existing pending request for the same WynnID.
