@@ -404,3 +404,5 @@ dist-ssr
 *.njsproj
 *.sw?
 .angular
+
+*.usersecrets.json
