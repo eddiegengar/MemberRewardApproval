@@ -25,7 +25,6 @@ export class RewardComponent implements OnInit {
   rewardType = '';
   title = '';
   amount!: number;
-  requests: RewardRequest[] = [];
 
   // Hardcoded reward types
   rewardTypes = ['籌碼兌換申請審批'];
@@ -36,16 +35,15 @@ export class RewardComponent implements OnInit {
   };
   titles: string[] = [];
 
-  constructor(private rewardService: RewardService) {}
+  constructor(public rewardService: RewardService) {} // public for async pipe
 
   ngOnInit(): void {
     this.rewardService.connectToHub();
-    this.rewardService.requests$.subscribe((r) => (this.requests = r));
   }
 
   onRewardTypeChange() {
     this.titles = this.titlesByType[this.rewardType] || [];
-    this.title = ''; // Reset title selection
+    this.title = '';
   }
 
   submitRequest() {

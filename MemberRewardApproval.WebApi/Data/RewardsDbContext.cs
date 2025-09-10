@@ -10,7 +10,6 @@ namespace MemberRewardApproval.WebApi.Data
         public DbSet<RewardRequest> RewardRequests { get; set; }
         public DbSet<DailySequence> DailySequences { get; set; }
         public DbSet<Supervisor> Supervisors { get; set; }
-        // public DbSet<MemberPerformance> MemberPerformances { get; set; }
         public DbSet<MemberPerformanceSnapshot> MemberPerformanceSnapshots { get; set; }
         public DbSet<ConversationReferenceEntity> ConversationReferences { get; set; }
 
@@ -29,7 +28,7 @@ namespace MemberRewardApproval.WebApi.Data
                 .HasKey(m => m.SnapshotId);
 
             modelBuilder.Entity<Supervisor>().HasData(
-                new Supervisor { Id = "1", Name = "Supervisor1", Email = "it@winson-group.com", AadId = "6f6a353c0843453e" }
+                new Supervisor { Id = "1", Name = "Supervisor1", Email = "it@winson-group.com", AadId = "" }
             );
 
             modelBuilder.Entity<MemberPerformanceSnapshot>().HasData(

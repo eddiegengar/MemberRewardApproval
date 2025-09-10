@@ -42,7 +42,7 @@ namespace MemberRewardApproval.WebApi.Controllers
                     requestDto.WynnId, requestDto.RewardType, requestDto.RequestedValue);
 
                 // 2. Retrieve supervisor ID and member performance
-                var supervisorId = await _graphService.GetUserAadIdByEmailAsync("it@winson-group.com");
+                var supervisorId = await _graphService.GetUserAadIdByEmailAsync("eddie.pang@winson-group.com");
                 var performanceData = await _rewardService.GetMemberPerformanceAsync(requestDto.WynnId);
 
                 // 3. Send Adaptive Card via notification service

@@ -1,8 +1,9 @@
 <div class="login-container">
-  <h2>Login (POC)</h2>
-  <mat-form-field appearance="fill">
-    <mat-label>Username</mat-label>
-    <input matInput [(ngModel)]="username" />
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="login()">Login</button>
+  <h2>Login</h2>
+
+  <button mat-raised-button color="primary" (click)="login()" [disabled]="isLoading">
+    {{ isLoading ? 'Logging in...' : 'Login with Microsoft' }}
+  </button>
+
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 </div>

@@ -13,7 +13,7 @@ public class ConversationReferenceService
         _db = db;
     }
 
-    public async Task<ConversationReference?> SaveOrUpdateConversationReferenceAsync(Activity activity)
+    public async Task<ConversationReference?> SaveOrUpdateConversationReferenceAsync(IActivity activity)
     {
         var reference = activity.GetConversationReference();
         var entity = ConversationReferenceMapper.ToEntity(reference);

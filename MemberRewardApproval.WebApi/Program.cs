@@ -10,6 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
 
 var clientUrl = builder.Configuration["Angular:ClientUrl"];
 
@@ -49,14 +53,14 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-
-        // policy.WithOrigins(clientUrl)
+        // policy.AllowAnyOrigin()
         //     .AllowAnyHeader()
-        //     .AllowAnyMethod()
-        //     .AllowCredentials();
+        //     .AllowAnyMethod();
+
+        policy.WithOrigins(clientUrl)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -83,15 +87,37 @@ else
 }
 app.UseCors();
 
-app.UseStaticFiles();
-
 app.UseRouting();
 // Authentication & Authorization
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("Handling request: " + context.Request.Path);
+
+    // Optionally log headers
+    foreach (var header in context.Request.Headers)
+    {
+        Console.WriteLine($"{header.Key}: {header.Value}");
+    }
+
+    // Optionally log body for /api/messages
+    if (context.Request.Path.StartsWithSegments("/api/messages"))
+    {
+        context.Request.EnableBuffering();
+        using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+        var body = await reader.ReadToEndAsync();
+        Console.WriteLine("Request body: " + body);
+        context.Request.Body.Position = 0;
+    }
+
+    await next();
+
+    Console.WriteLine("Finished handling request.");
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapHub<RewardHub>("/rewardHub");
 app.MapHub<RequestHub>("/hubs/request");
 
 app.Run();

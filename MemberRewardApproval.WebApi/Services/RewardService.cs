@@ -81,7 +81,7 @@ namespace MemberRewardApproval.WebApi.Services
         /// <summary>
         /// Update request status after supervisor action
         /// </summary>
-        public async Task UpdateRequestStatusAsync(string requestId, string status)
+        public async Task<RewardRequest> UpdateRequestStatusAsync(string requestId, string status)
         {
             var request = await _db.RewardRequests.FindAsync(requestId);
             if (request != null)
@@ -89,6 +89,7 @@ namespace MemberRewardApproval.WebApi.Services
                 request.Status = status;
                 await _db.SaveChangesAsync();
             }
+            return request;
         }
     }
 }

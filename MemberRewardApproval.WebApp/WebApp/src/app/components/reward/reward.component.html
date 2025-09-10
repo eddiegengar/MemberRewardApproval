@@ -28,7 +28,7 @@
   <button mat-raised-button color="primary" (click)="submitRequest()">Submit</button>
 
   <h3>Your Requests</h3>
-  <table mat-table [dataSource]="requests" class="mat-elevation-z8">
+  <table mat-table [dataSource]="(rewardService.requests$ | async) || []" class="mat-elevation-z8">
     <ng-container matColumnDef="wynnId">
       <th mat-header-cell *matHeaderCellDef>Wynn ID</th>
       <td mat-cell *matCellDef="let r">{{ r.wynnId }}</td>

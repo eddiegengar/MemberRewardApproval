@@ -1,25 +1,32 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common'; // ✅ import CommonModule
+import { MsalWrapperService } from '../../services/msal.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule], // ✅ add CommonModule here
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  username = '';
+  isLoading = false;
+  errorMessage = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private msal: MsalWrapperService, private router: Router) {}
 
-  login() {
-    if (this.username.trim()) {
-      this.authService.login(this.username);
+  async login() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      await this.msal.login();
       this.router.navigate(['/reward']);
+    } catch (err) {
+      console.error('Login failed:', err);
+      this.errorMessage = 'Login failed. Please try again.';
+    } finally {
+      this.isLoading = false;
     }
   }
 }
